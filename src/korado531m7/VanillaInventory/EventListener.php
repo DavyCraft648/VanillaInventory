@@ -11,7 +11,6 @@
 
 namespace korado531m7\VanillaInventory;
 
-
 use korado531m7\VanillaInventory\inventory\AnvilInventory;
 use korado531m7\VanillaInventory\inventory\EnchantInventory;
 use korado531m7\VanillaInventory\inventory\FakeInventory;
@@ -22,12 +21,12 @@ use pocketmine\network\mcpe\protocol\FilterTextPacket;
 use pocketmine\network\mcpe\protocol\InventoryTransactionPacket;
 use pocketmine\network\mcpe\protocol\PlayerActionPacket;
 
-class EventListener implements Listener{
+class EventListener implements Listener {
 
-    public function onDataPacketReceive(DataPacketReceiveEvent $event) : void{
+    public function onDataPacketReceive(DataPacketReceiveEvent $event): void {
         $pk = $event->getPacket();
 
-        switch(true){
+        switch (true) {
             case $pk instanceof ActorEventPacket:
                 FakeInventory::dealXp($event->getPlayer(), $pk);
                 break;
@@ -38,7 +37,7 @@ class EventListener implements Listener{
 
             case $pk instanceof InventoryTransactionPacket:
                 $tmp = DataManager::getTemporarilyInventory($event->getPlayer());
-                if($tmp instanceof FakeInventory){
+                if ($tmp instanceof FakeInventory) {
                     $tmp->listen($event->getPlayer(), $pk);
                 }
                 break;

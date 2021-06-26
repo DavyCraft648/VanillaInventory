@@ -11,15 +11,14 @@
 
 namespace korado531m7\VanillaInventory;
 
-
 use korado531m7\VanillaInventory\block\Anvil;
 use korado531m7\VanillaInventory\block\EnchantmentBlock;
 use pocketmine\block\BlockFactory;
 use pocketmine\plugin\PluginBase;
 
-class Main extends PluginBase{
+class Main extends PluginBase {
 
-    public function onEnable(){
+    public function onEnable(): void {
         BlockFactory::registerBlock(new Anvil(), true);
         BlockFactory::registerBlock(new EnchantmentBlock(), true);
 

@@ -11,7 +11,6 @@
 
 namespace korado531m7\VanillaInventory\inventory;
 
-
 use korado531m7\VanillaInventory\DataManager;
 use pocketmine\nbt\tag\IntTag;
 use pocketmine\network\mcpe\protocol\FilterTextPacket;
@@ -21,34 +20,34 @@ use pocketmine\network\mcpe\protocol\types\NetworkInventoryAction;
 use pocketmine\network\mcpe\protocol\types\WindowTypes;
 use pocketmine\Player;
 
-class AnvilInventory extends FakeInventory{
+class AnvilInventory extends FakeInventory {
 
-    public function getName() : string{
+    public function getName(): string {
         return 'AnvilInventory';
     }
 
-    public function getDefaultSize() : int{
+    public function getDefaultSize(): int {
         return 2; //Output slot is not counted
     }
 
-    public function getNetworkType() : int{
+    public function getNetworkType(): int {
         return WindowTypes::ANVIL;
     }
 
-    public function getFirstVirtualSlot() : int{
+    public function getFirstVirtualSlot(): int {
         return 1;
     }
 
-    public function getVirtualSlots() : array{
+    public function getVirtualSlots(): array {
         return [1, 2];
     }
 
-    public function listen(Player $who, InventoryTransactionPacket $packet) : void{
-        if($this->isOutputItem($packet)){
-            foreach($packet->trData->getActions() as $action){
-                if($action->sourceType === NetworkInventoryAction::SOURCE_CONTAINER && $action->windowId === ContainerIds::INVENTORY){
+    public function listen(Player $who, InventoryTransactionPacket $packet): void {
+        if ($this->isOutputItem($packet)) {
+            foreach ($packet->trData->getActions() as $action) {
+                if ($action->sourceType === NetworkInventoryAction::SOURCE_CONTAINER && $action->windowId === ContainerIds::INVENTORY) {
                     $newName = DataManager::getTemporarilyText($who);
-                    if($newName !== null){
+                    if ($newName !== null) {
                         $action->newItem->getItemStack()->setCustomName($newName);
                         DataManager::resetTemporarilyText($who);
                     }
@@ -58,10 +57,10 @@ class AnvilInventory extends FakeInventory{
         parent::listen($who, $packet);
     }
 
-    private function isOutputItem(InventoryTransactionPacket $packet) : bool{
-        foreach($packet->trData->getActions() as $action){
-            if($action->sourceType === NetworkInventoryAction::SOURCE_TODO && $action->windowId === -12 && $action->inventorySlot === 2){
-                if($action->oldItem->getItemStack()->getNamedTag()->hasTag('RepairCost', IntTag::class) && $action->newItem->getItemStack()->isNull()){
+    private function isOutputItem(InventoryTransactionPacket $packet): bool {
+        foreach ($packet->trData->getActions() as $action) {
+            if ($action->sourceType === NetworkInventoryAction::SOURCE_TODO && $action->windowId === -12 && $action->inventorySlot === 2) {
+                if ($action->oldItem->getItemStack()->getNamedTag()->hasTag('RepairCost', IntTag::class) && $action->newItem->getItemStack()->isNull()) {
                     return true;
                 }
             }
@@ -70,10 +69,11 @@ class AnvilInventory extends FakeInventory{
         return false;
     }
 
-    public static function writeText(Player $player, FilterTextPacket $packet) : void{
-        if(DataManager::equalsTemporarilyInventory($player, self::class)){
+    public static function writeText(Player $player, FilterTextPacket $packet): void {
+        if (DataManager::equalsTemporarilyInventory($player, self::class)) {
             DataManager::setTemporarilyText($player, $packet);
             $player->dataPacket(FilterTextPacket::create($packet->getText(), true));
         }
     }
+
 }

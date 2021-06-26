@@ -11,21 +11,21 @@
 
 namespace korado531m7\VanillaInventory\event;
 
-
 use pocketmine\event\Cancellable;
 use pocketmine\event\player\PlayerEvent;
 use pocketmine\item\Item;
 use pocketmine\Player;
 
-class PlayerEnchantItemEvent extends PlayerEvent implements Cancellable{
+class PlayerEnchantItemEvent extends PlayerEvent implements Cancellable {
+
     /** @var Item */
     private $item;
 
     /**
-     * @param Player                $player
-     * @param Item                  $item
+     * @param Player $player
+     * @param Item $item
      */
-    public function __construct(Player $player, Item $item){
+    public function __construct(Player $player, Item $item) {
         $this->player = $player;
         $this->item = $item;
     }
@@ -35,7 +35,8 @@ class PlayerEnchantItemEvent extends PlayerEvent implements Cancellable{
      *
      * @return Item
      */
-    public function getItem() : Item{
+    public function getItem(): Item {
         return $this->item;
     }
+
 }

@@ -13,17 +13,16 @@ Install this plugin and run your server. Place anvil or enchantment block only.
 ## Developer Documentation
 - PlayerEnchantItemEvent
 
-when player tries to enchant some items, this event will called
+> When player tries to enchant some items, this event will be called
 
 ```php
-//Player Who tried to enchant
-public function getPlayer() : \pocketmine\Player
+/** @var \korado531m7\VanillaInventory\event\PlayerEnchantItemEvent $event */
+// Return the player who tries to enchant
+$player = $event->getPlayer();
 
-//Return an enchanted item
-public function getItem() : \pocketmine\item\Item
+// Return an enchanted item
+$item = $event->getItem();
 ```
-
-<br>
 
 - PlayerAnvilUseEvent
 

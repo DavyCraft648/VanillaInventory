@@ -11,15 +11,14 @@
 
 namespace korado531m7\VanillaInventory\block;
 
-
 use korado531m7\VanillaInventory\inventory\EnchantInventory;
 use pocketmine\block\EnchantingTable;
 use pocketmine\item\Item;
 use pocketmine\Player as BasePlayer;
 
-class EnchantmentBlock extends EnchantingTable{
+class EnchantmentBlock extends EnchantingTable {
 
-    public function onActivate(Item $item, BasePlayer $player = null) : bool{
+    public function onActivate(Item $item, BasePlayer $player = null): bool {
         $player->addWindow(new EnchantInventory($this));
 
         return true;

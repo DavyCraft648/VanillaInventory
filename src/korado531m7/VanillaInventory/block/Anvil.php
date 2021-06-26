@@ -11,15 +11,14 @@
 
 namespace korado531m7\VanillaInventory\block;
 
-
 use korado531m7\VanillaInventory\inventory\AnvilInventory;
 use pocketmine\block\Anvil as BaseAnvil;
 use pocketmine\item\Item;
 use pocketmine\Player;
 
-class Anvil extends BaseAnvil{
+class Anvil extends BaseAnvil {
 
-    public function onActivate(Item $item, Player $player = null) : bool{
+    public function onActivate(Item $item, Player $player = null): bool {
         $player->addWindow(new AnvilInventory($this));
 
         return true;

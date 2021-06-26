@@ -11,7 +11,6 @@
 
 namespace korado531m7\VanillaInventory\inventory;
 
-
 use korado531m7\VanillaInventory\DataManager;
 use pocketmine\event\inventory\InventoryTransactionEvent;
 use pocketmine\event\player\PlayerDropItemEvent;
@@ -24,41 +23,42 @@ use pocketmine\network\mcpe\protocol\types\ContainerIds;
 use pocketmine\network\mcpe\protocol\types\NetworkInventoryAction;
 use pocketmine\Player;
 
-abstract class FakeInventory extends ContainerInventory{
+abstract class FakeInventory extends ContainerInventory {
 
     /**
      * @return int
      */
-    abstract public function getFirstVirtualSlot() : int;
+    abstract public function getFirstVirtualSlot(): int;
 
     /**
      * @return int[]
      */
-    abstract public function getVirtualSlots() : array;
+    abstract public function getVirtualSlots(): array;
 
-    public function open(Player $who) : bool{
+    public function open(Player $who): bool {
         DataManager::setTemporarilyInventory($who, $this);
+
         return parent::open($who);
     }
 
-    public function close(Player $who) : void{
+    public function close(Player $who): void {
         DataManager::resetTemporarilyData($who);
         parent::close($who);
     }
 
-    public function listen(Player $who, InventoryTransactionPacket $packet) : void{
+    public function listen(Player $who, InventoryTransactionPacket $packet): void {
         $tmp = DataManager::getTemporarilyInventory($who);
-        if($tmp instanceof $this){
+        if ($tmp instanceof $this) {
             $transactionData = $packet->trData;
-            foreach($transactionData->getActions() as $action){
-                switch($action->sourceType){
+            foreach ($transactionData->getActions() as $action) {
+                switch ($action->sourceType) {
                     case NetworkInventoryAction::SOURCE_WORLD:
-                        if($action->windowId === null){
+                        if ($action->windowId === null) {
                             $ev = new PlayerDropItemEvent($who, $action->newItem->getItemStack());
                             $ev->call();
-                            if($ev->isCancelled()){
+                            if ($ev->isCancelled()) {
                                 $tmp->setItem($action->inventorySlot, $action->newItem->getItemStack());
-                            }else{
+                            } else {
                                 $who->dropItem($action->newItem->getItemStack());
                             }
                         }
@@ -72,9 +72,9 @@ abstract class FakeInventory extends ContainerInventory{
                         ]));
                         $ev->call();
 
-                        if($action->windowId === ContainerIds::UI && in_array($action->inventorySlot, $this->getVirtualSlots(), true)){
+                        if ($action->windowId === ContainerIds::UI && in_array($action->inventorySlot, $this->getVirtualSlots(), true)) {
                             $tmp->setItem($adjustedSlot, $ev->isCancelled() ? $action->oldItem->getItemStack() : $action->newItem->getItemStack());
-                        }else{
+                        } else {
                             $who->getWindow($action->windowId)->setItem($action->inventorySlot, $ev->isCancelled() ? $action->oldItem->getItemStack() : $action->newItem->getItemStack());
                         }
                 }
@@ -82,8 +82,8 @@ abstract class FakeInventory extends ContainerInventory{
         }
     }
 
-    public static function dealXp(Player $player, ActorEventPacket $packet) : void{
-        if($packet->event === ActorEventPacket::PLAYER_ADD_XP_LEVELS && DataManager::equalsTemporarilyInventory($player, static::class)){
+    public static function dealXp(Player $player, ActorEventPacket $packet): void {
+        if ($packet->event === ActorEventPacket::PLAYER_ADD_XP_LEVELS && DataManager::equalsTemporarilyInventory($player, static::class)) {
             $player->addXpLevels($packet->data);
         }
     }
