@@ -38,6 +38,7 @@ class EventListener implements Listener {
             case $pk instanceof InventoryTransactionPacket:
                 $tmp = DataManager::getTemporarilyInventory($event->getPlayer());
                 if ($tmp instanceof FakeInventory) {
+                    $event->setCancelled();
                     $tmp->listen($event->getPlayer(), $pk);
                 }
                 break;
