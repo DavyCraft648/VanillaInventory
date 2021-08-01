@@ -72,10 +72,21 @@ abstract class FakeInventory extends ContainerInventory {
                         ]));
                         $ev->call();
 
+                        $slot = $action->inventorySlot;
+                        $inv = $who->getWindow($action->windowId);
                         if ($action->windowId === ContainerIds::UI && in_array($action->inventorySlot, $this->getVirtualSlots(), true)) {
-                            $tmp->setItem($adjustedSlot, $ev->isCancelled() ? $action->oldItem->getItemStack() : $action->newItem->getItemStack());
+                            $slot = $adjustedSlot;
+                            $inv = $tmp;
+                        }
+
+                        if (!$ev->isCancelled()) {
+                            $inv->setItem($slot, $action->newItem->getItemStack(), false);
+                            if (count($viewers = $inv->getViewers()) > 1) {
+                                unset($viewers[spl_object_hash($who)]);
+                                $inv->sendSlot($slot, $viewers);
+                            }
                         } else {
-                            $who->getWindow($action->windowId)->setItem($action->inventorySlot, $ev->isCancelled() ? $action->oldItem->getItemStack() : $action->newItem->getItemStack());
+                            $inv->sendSlot($slot, $who);
                         }
                 }
             }
