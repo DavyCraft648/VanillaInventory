@@ -20,6 +20,8 @@ use pocketmine\network\mcpe\protocol\ActorEventPacket;
 use pocketmine\network\mcpe\protocol\FilterTextPacket;
 use pocketmine\network\mcpe\protocol\InventoryTransactionPacket;
 use pocketmine\network\mcpe\protocol\PlayerActionPacket;
+use pocketmine\network\mcpe\protocol\types\ContainerIds;
+use pocketmine\network\mcpe\protocol\types\NetworkInventoryAction;
 
 class EventListener implements Listener {
 
@@ -37,7 +39,10 @@ class EventListener implements Listener {
 
             case $pk instanceof InventoryTransactionPacket:
                 $tmp = DataManager::getTemporarilyInventory($event->getPlayer());
-                if ($tmp instanceof FakeInventory) {
+                $actions = array_filter($pk->trData->getActions(), function(NetworkInventoryAction $action) {
+                    return !($action->sourceType === NetworkInventoryAction::SOURCE_CONTAINER && $action->windowId === ContainerIds::INVENTORY);
+                });
+                if ($tmp instanceof FakeInventory && count($actions) !== 0) {
                     $event->setCancelled();
                     $tmp->listen($event->getPlayer(), $pk);
                 }
