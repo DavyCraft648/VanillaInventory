@@ -70,14 +70,14 @@ class DataManager {
      * @param Player $player
      */
     public static function resetTemporarilyText(Player $player): void {
-        self::$texts[$player->getRawUniqueId()] = null;
+        unset(self::$texts[$player->getRawUniqueId()]);
     }
 
     /**
      * @param Player $player
      */
     public static function resetTemporarilyData(Player $player): void {
-        self::$inventories[$player->getRawUniqueId()] = null;
+        unset(self::$inventories[$player->getRawUniqueId()]);
         self::resetTemporarilyText($player);
     }
 
